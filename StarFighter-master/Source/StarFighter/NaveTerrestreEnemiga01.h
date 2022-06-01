@@ -41,5 +41,16 @@ public:
 
     bool bHit;
     bool bDead;
+
+    FTimerHandle MemberTimerHandle; //caracteristica que usaremos en el BeginPlay
+
+    UPROPERTY()
+        TMap<FString, int32> NTerrestreEnemigaInfo;
+
+    UFUNCTION()
+        void ContadorBalas();
+
+    UFUNCTION()
+        void ShowContadorBalas();
 	
 };

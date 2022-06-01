@@ -15,6 +15,8 @@ ANaveTerrestreEnemiga01::ANaveTerrestreEnemiga01()
 
 	fBurstDelay = 0.15f;
 
+	NTerrestreEnemigaInfo.Add("Disparo", 0);
+
 }
 
 void ANaveTerrestreEnemiga01::BeginPlay()
@@ -30,6 +32,8 @@ void ANaveTerrestreEnemiga01::BeginPlay()
 	ThisWorld = GetWorld();
 
 	RandomStart = FMath::Rand();
+
+	GetWorldTimerManager().SetTimer(MemberTimerHandle, this, &ANaveTerrestreEnemiga01::ShowContadorBalas, 60.0f, true, 60.0f); //mostrara los disparos en 60 segundos
 
 }
 
@@ -58,12 +62,38 @@ void ANaveTerrestreEnemiga01::Tick(float DeltaTime)
 
 			GetWorld()->SpawnActor(Projectile_BalaEnemigo_BP, &Current_Location, &Current_Rotation, Params);
 
+			ContadorBalas();
+
 			fBurstDelay = 0.0f;
 
 		}
 
 		TimeSinceLastShot = 0.0f;
 		fBurstDelay += DeltaTime;
+
+	}
+
+}
+
+void ANaveTerrestreEnemiga01::ContadorBalas()
+{
+	FString n = "Disparo";
+	for (auto& pair : NTerrestreEnemigaInfo)
+	{
+		if (pair.Key == n)
+		{
+			pair.Value = pair.Value + 1;
+			
+		}
+	}
+
+}
+
+void ANaveTerrestreEnemiga01::ShowContadorBalas()
+{
+	for (auto& Elem : NTerrestreEnemigaInfo)
+	{
+		GEngine->AddOnScreenDebugMessage(-1, 1, FColor::Red, FString::Printf(TEXT("%s = %d"), *Elem.Key, Elem.Value)); //mostramos en pantalla la cantidad de vida
 
 	}
 
