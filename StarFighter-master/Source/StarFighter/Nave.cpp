@@ -5,12 +5,6 @@
 #include "Components/StaticMeshComponent.h"
 #include "Engine/CollisionProfile.h"
 #include "UObject/ConstructorHelpers.h"
-//#include "Components/CapsuleComponent.h"
-
-
-const FName ANave::MoveForwardBinding("MoveForward");
-const FName ANave::MoveRightBinding("MoveRight");
-const FName ANave::FireBinding("Fire");
 
 // Sets default values
 ANave::ANave()
@@ -25,15 +19,6 @@ ANave::ANave()
 	RootComponent = ShipMeshComponent;
 	ShipMeshComponent->SetCollisionProfileName(UCollisionProfile::Pawn_ProfileName);
 	ShipMeshComponent->SetStaticMesh(ShipMesh.Object);
-
-	//RootComponent = CreateDefaultSubobject<USceneComponent>(TEXT("RootComponent"));
-
-	//ShipMeshComponent = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("Ship Mesh"));
-	//CapsuleCollision = CreateDefaultSubobject<UCapsuleComponent>(TEXT("Capsule Collision"));
-
-	//ShipMeshComponent->AttachToComponent(RootComponent, FAttachmentTransformRules::KeepRelativeTransform);
-	//ShipMeshComponent->SetCollisionProfileName(UCollisionProfile::Pawn_ProfileName);
-	//CapsuleCollision->AttachToComponent(RootComponent, FAttachmentTransformRules::KeepRelativeTransform);
 
 }
 

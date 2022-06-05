@@ -7,7 +7,6 @@
 #include "Nave.generated.h"
 
 class UStaticMeshComponent;
-//class UCapsuleComponent;
 
 UCLASS()
 class STARFIGHTER_API ANave : public APawn
@@ -19,9 +18,6 @@ protected:
 	UPROPERTY(Category = Mesh, VisibleDefaultsOnly, BlueprintReadOnly, meta = (AllowPrivateAccess = "true"))
 		UStaticMeshComponent* ShipMeshComponent;
 
-	//UPROPERTY(EditAnywhere)
-		//UCapsuleComponent* CapsuleCollision;
-
 public:
 	// Sets default values for this pawn's properties
 	ANave();
@@ -32,21 +28,6 @@ public:
 
 	UPROPERTY(Category = Gameplay, EditAnywhere, BlueprintReadWrite)
 	int32 Vida;
-
-
-	static const FName MoveForwardBinding;
-	static const FName MoveRightBinding;
-	static const FName FireBinding;
-
-	UPROPERTY(EditAnywhere)
-		float MaxVelocity;
-
-	float Current_X_Velocity;
-	float Current_Y_Velocity;
-
-	FVector Current_Location;
-	FRotator Current_Rotation;
-	FVector New_Location;
 
 protected:
 	// Called when the game starts or when spawned

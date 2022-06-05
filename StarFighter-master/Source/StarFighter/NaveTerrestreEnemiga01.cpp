@@ -2,6 +2,10 @@
 
 
 #include "NaveTerrestreEnemiga01.h"
+#include "Proyectil_Bala.h"
+#include "Proyectil_Bomba.h"
+#include "Proyectil_Misil.h"
+#include "Proyectil_Rayo.h"
 
 ANaveTerrestreEnemiga01::ANaveTerrestreEnemiga01()
 {
@@ -13,7 +17,13 @@ ANaveTerrestreEnemiga01::ANaveTerrestreEnemiga01()
 
 	ShipMeshComponent->SetStaticMesh(NaveEnemigaTerrestre.Object);
 
-	fBurstDelay = 0.15f;
+	// Weapon
+	GunOffset = FVector(90.f, 0.f, 0.f);
+	FireRate = 10.0f;
+	bCanFire = true;
+
+	//FireForwardValue = 10.0f;
+	//FireRightValue = 100.0f;
 
 	NTerrestreEnemigaInfo.Add("Disparo", 0);
 
@@ -25,13 +35,14 @@ void ANaveTerrestreEnemiga01::BeginPlay()
 
 	TotalTime = 0.0f;
 
+	bHit = false;
+	bDead = false;
+
 	TimeSinceLastShot = 0.0f;
 
-	fDestroyTimer = 1.0f;
+	RandomStart = FMath::Rand();
 
 	ThisWorld = GetWorld();
-
-	RandomStart = FMath::Rand();
 
 	GetWorldTimerManager().SetTimer(MemberTimerHandle, this, &ANaveTerrestreEnemiga01::ShowContadorBalas, 60.0f, true, 60.0f); //mostrara los disparos en 60 segundos
 
@@ -41,6 +52,9 @@ void ANaveTerrestreEnemiga01::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
 
+	// Spawn projectile at an offset from this pawn
+	const FVector SpawnLocation = GetActorLocation() + FireRotation.RotateVector(GunOffset);
+
 	Current_Location = this->GetActorLocation();
 	Current_Rotation = this->GetActorRotation();
 
@@ -48,28 +62,79 @@ void ANaveTerrestreEnemiga01::Tick(float DeltaTime)
 
 	this->SetActorLocation(Current_Location - (Current_Velocity * DeltaTime));
 
-	//handle shooting
-
-	TotalTime += DeltaTime;
 	TimeSinceLastShot += DeltaTime;
 
-	if (TimeSinceLastShot >= 1.0f && !bHit) {
+	if (TimeSinceLastShot >= 1.0f) {
+		if (bCanFire == true)
+		{
 
-		if (fBurstDelay >= 0.05f) {
+			UWorld* const World = GetWorld();
+			if (World != nullptr)
+			{
+				// spawn the projectile
+				World->SpawnActor<AProyectil_Bala>(SpawnLocation, FireRotation);
+				ContadorBalas();
 
-			FActorSpawnParameters Params = {};
-			Params.Owner = this;
-
-			GetWorld()->SpawnActor(Projectile_BalaEnemigo_BP, &Current_Location, &Current_Rotation, Params);
-
-			ContadorBalas();
-
-			fBurstDelay = 0.0f;
+			}
+			World->GetTimerManager().SetTimer(TimerHandle_ShotTimerExpired, this, &ANaveTerrestreEnemiga01::ShotTimerExpired, FireRate);
+			bCanFire = true;
 
 		}
-
 		TimeSinceLastShot = 0.0f;
-		fBurstDelay += DeltaTime;
+	}
+
+	if (bHit)
+	{
+		ShipMeshComponent->SetVisibility(false);
+		this->SetActorEnableCollision(false);
+
+	}
+	if (bDead)
+	{
+		this->Destroy();
+	}
+
+}
+
+void ANaveTerrestreEnemiga01::FireBala()
+{
+	bCanFire = true;
+
+}
+
+void ANaveTerrestreEnemiga01::ShotTimerExpired()
+{
+	bCanFire = true;
+
+}
+
+void ANaveTerrestreEnemiga01::NotifyHit(UPrimitiveComponent* MyComp, AActor* Other, UPrimitiveComponent* OtherComp, bool bSelfMoved, FVector HitLocation, FVector HitNormal, FVector NormalImpulse, const FHitResult& Hit)
+{
+	AProyectil_Bala* InventoryItemBala = Cast<AProyectil_Bala>(Other);
+	if (InventoryItemBala != nullptr)
+	{
+		bDead = true;
+
+	}
+
+	AProyectil_Bomba* InventoryItemBomba = Cast<AProyectil_Bomba>(Other);
+	if (InventoryItemBomba != nullptr)
+	{
+		bDead = true;
+
+	}
+
+	AProyectil_Misil* InventoryItemMisil = Cast<AProyectil_Misil>(Other);
+	if (InventoryItemMisil != nullptr)
+	{
+		bDead = true;
+
+	}
+
+	AProyectil_Rayo* InventoryItemRayo = Cast<AProyectil_Rayo>(Other);
+	if (InventoryItemRayo != nullptr)
+	{
+		bDead = true;
 
 	}
 

@@ -5,16 +5,8 @@
 #include "CoreMinimal.h"
 #include "NaveAerea.h"
 #include "InventoryComponent.h"
-#include "Projectile.h"
-#include "Projectile_Bala.h"
-#include "Projectile_Bomba.h"
-#include "Projectile_Misil.h"
-#include "Projectile_Rayo.h"
 #include "NaveAereaJugador.generated.h"
 
-/**
- * 
- */
 UCLASS()
 class STARFIGHTER_API ANaveAereaJugador : public ANaveAerea
 {
@@ -36,14 +28,24 @@ public:
 	virtual void SetupPlayerInputComponent(class UInputComponent* InputComponent) override;
 	// End Actor Interface
 
-	void MoveUp(float AxisValue);
+	static const FName MoveForwardBinding;
+	static const FName MoveRightBinding;
 
-	void MoveRight(float AxisValue);
+	//ProyectilBala
+	void FireBala();
+	void FireShotBala(FVector FireDirection);
 
-	void Fire();
-	
-	/* Fire a shot in the specified direction */
-	void FireShot(FVector FireDirection);
+	//ProyectilBomba
+	void FireBomba();
+	void FireShotBomba(FVector FireDirection);
+
+	//ProyectilMisil
+	void FireMisil();
+	void FireShotMisil(FVector FireDirection);
+
+	//ProyectilRayo
+	void FireRayo();
+	void FireShotRayo(FVector FireDirection);
 
 	/* Handler for the fire timer expiry */
 	void ShotTimerExpired();
@@ -77,9 +79,6 @@ public:
 		void ShowInventory();
 
 	UFUNCTION()
-		void Test();
-
-	UFUNCTION()
 		void ConsumirVelocidad();
 
 	UFUNCTION()
@@ -92,58 +91,10 @@ public:
 		void DisminuirVida();
 
 	UFUNCTION()
-		void FastShoot();
+		void VisibilityOff();
 
 	UFUNCTION()
-		void SlowShoot();
-
-	//ProjectileBala
-
-	void FireWeaponBala();
-	void StartFiringBala();
-	void StopFiringBala();
-	bool bBalaIsFiring;
-	float FireBalaRate;
-	float BalaTimeSinceLastShot;
-
-	UPROPERTY(EditAnywhere)
-		TSubclassOf<AProjectile_Bala> Projectile_Bala_BP;
-
-	//ProjectileBomba
-
-	void FireWeaponBomba();
-	void StartFiringBomba();
-	void StopFiringBomba();
-	bool bBombaIsFiring;
-	float FireBombaRate;
-	float BombaTimeSinceLastShot;
-
-	UPROPERTY(EditAnywhere)
-		TSubclassOf<AProjectile_Bomba> Projectile_Bomba_BP;
-
-	//ProjectileMisil
-
-	void FireWeaponMisil();
-	void StartFiringMisil();
-	void StopFiringMisil();
-	bool bMisilIsFiring;
-	float FireMisilRate;
-	float MisilTimeSinceLastShot;
-
-	UPROPERTY(EditAnywhere)
-		TSubclassOf<AProjectile_Misil> Projectile_Misil_BP;
-
-	//ProjectileRayo
-
-	void FireWeaponRayo();
-	void StartFiringRayo();
-	void StopFiringRayo();
-	bool bRayoIsFiring;
-	float FireRayoRate;
-	float RayoTimeSinceLastShot;
-
-	UPROPERTY(EditAnywhere)
-		TSubclassOf<AProjectile_Rayo> Projectile_Rayo_BP;
+		void VisibilityOn();
 
 	/** Returns CameraComponent subobject **/
 	FORCEINLINE class UCameraComponent* GetCameraComponent() const { return CameraComponent; }
@@ -164,5 +115,14 @@ private:
 
 	float FireForwardValue;
 	float FireRightValue;
+
+public:
+	//Funcion que nos permitira aumentar la vida y armadura de nuestra nave cuando recojamos un objeto
+
+	void CollectablePickup1();
+
+	//Funcion que nos permitira reducir la velocidad de nuestra nave
+
+	void CollectablePickup2();
 
 };

@@ -4,8 +4,6 @@
 
 #include "CoreMinimal.h"
 #include "NaveAerea.h"
-#include "Projectile.h"
-#include "Projectile_Misil.h"
 #include "NaveAereaEnemiga01.generated.h"
 
 UCLASS()
@@ -22,10 +20,23 @@ protected:
 public:
     virtual void Tick(float DeltaTime) override;
 
-    UPROPERTY(EditAnywhere)
-        TSubclassOf<AProjectile_Misil> Projectile_MisilEnemigo_BP;
+    UFUNCTION()
+        void FireMisil();
 
-    UWorld* ThisWorld;
+    /* Handler for the fire timer expiry */
+    UFUNCTION()
+        void ShotTimerExpired();
+
+    /** Offset from the ships location to spawn projectiles */
+    UPROPERTY(Category = Gameplay, EditAnywhere, BlueprintReadWrite)
+        FVector GunOffset;
+
+    /* How fast the weapon will fire */
+    UPROPERTY(Category = Gameplay, EditAnywhere, BlueprintReadWrite)
+        float FireRate;
+
+    const FVector FireDirection = FVector(-90.f, 0.f, 0.0f).GetClampedToMaxSize(1.0f);
+    const FRotator FireRotation = FireDirection.Rotation();
 
     UPROPERTY(EditAnywhere)
         FVector Current_Velocity;
@@ -33,13 +44,30 @@ public:
     FVector Current_Location;
     FRotator Current_Rotation;
 
-    float TotalTime;
     float RandomStart;
+
+    float TotalTime;
+
     float TimeSinceLastShot;
-    float fDestroyTimer;
-    float fBurstDelay;
+
+    UFUNCTION()
+        virtual void NotifyHit(class UPrimitiveComponent* MyComp, AActor* Other, class UPrimitiveComponent* OtherComp, bool bSelfMoved,
+            FVector HitLocation, FVector HitNormal, FVector NormalImpulse, const FHitResult& Hit) override;
 
     bool bHit;
     bool bDead;
+
+    UWorld* ThisWorld;
+
+private:
+    /* Flag to control firing  */
+    uint32 bCanFire : 1;
+
+    /** Handle for efficient management of ShotTimerExpired timer */
+    FTimerHandle TimerHandle_ShotTimerExpired;
+
+
+    //float FireForwardValue;
+   // float FireRightValue;
 	
 };

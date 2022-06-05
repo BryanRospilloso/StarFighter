@@ -2,12 +2,18 @@
 
 
 #include "NaveAereaJugador.h"
-#include "Proyectil.h"
+#include "Proyectil_Bala.h"
+#include "Proyectil_Bomba.h"
+#include "Proyectil_Misil.h"
+#include "Proyectil_Rayo.h"
 #include "Camera/CameraComponent.h"
 #include "Components/InputComponent.h"
 #include "GameFramework/SpringArmComponent.h"
 #include "Kismet/GameplayStatics.h"
 #include "Engine/World.h"
+
+const FName ANaveAereaJugador::MoveForwardBinding("MoveForward");
+const FName ANaveAereaJugador::MoveRightBinding("MoveRight");
 
 ANaveAereaJugador::ANaveAereaJugador()
 {
@@ -35,9 +41,9 @@ ANaveAereaJugador::ANaveAereaJugador()
 	// Weapon
 	GunOffset = FVector(90.f, 0.f, 0.f);
 	FireRate = 0.1f;
-	bCanFire = false;
+	bCanFire = true;
 
-	FireForwardValue = 1.0f;
+	FireForwardValue = 0.0f;
 	FireRightValue = 0.0f;
 
 	//Ship info
@@ -45,36 +51,8 @@ ANaveAereaJugador::ANaveAereaJugador()
 	ShipInfo.Add("Velocidad", 0);
 	ShipInfo.Add("RestarVida", 0);
 	ShipInfo.Add("RestarVelocidad", 0);
-	ShipInfo.Add("DisparoRapido", 0);
-	ShipInfo.Add("DisparoLento", 0);
-
-	MaxVelocity = 500.0f;
-	Current_X_Velocity = 0.0f;
-	Current_Y_Velocity = 0.0f;
-
-	//ProjectileBala
-
-	bBalaIsFiring = false;
-	FireBalaRate = 0.25f;
-	BalaTimeSinceLastShot = 0.0f;
-
-	//ProjectileBomba
-
-	bBombaIsFiring = false;
-	FireBombaRate = 1.0f;
-	BombaTimeSinceLastShot = 0.0f;
-
-	//ProjectileMisil
-
-	bMisilIsFiring = false;
-	FireMisilRate = 2.0f;
-	MisilTimeSinceLastShot = 0.0f;
-
-	//ProjectileRayo
-
-	bRayoIsFiring = false;
-	FireRayoRate = 1.25f;
-	RayoTimeSinceLastShot = 0.0f;
+	ShipInfo.Add("Visibility_Off", 0);
+	ShipInfo.Add("Visibility_On", 0);
 
 }
 
@@ -82,11 +60,7 @@ void ANaveAereaJugador::BeginPlay()
 {
 	Super::BeginPlay();
 
-	Current_Location = this->GetActorLocation();
-	Current_Rotation = this->GetActorRotation();
-
 }
-
 
 void ANaveAereaJugador::SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent)
 {
@@ -95,109 +69,28 @@ void ANaveAereaJugador::SetupPlayerInputComponent(class UInputComponent* PlayerI
 	// set up gameplay key bindings
 	PlayerInputComponent->BindAxis(MoveForwardBinding);
 	PlayerInputComponent->BindAxis(MoveRightBinding);
-
-	PlayerInputComponent->BindAxis(FName("MoveUp"), this, &ANaveAereaJugador::MoveUp);
-	PlayerInputComponent->BindAxis(FName("MoveHorizontal"), this, &ANaveAereaJugador::MoveRight);
-	PlayerInputComponent->BindAction(FName("FireBala"), IE_Pressed, this, &ANaveAereaJugador::StartFiringBala);
-	PlayerInputComponent->BindAction(FName("FireBala"), IE_Released, this, &ANaveAereaJugador::StopFiringBala);
-	PlayerInputComponent->BindAction(FName("FireBomba"), IE_Pressed, this, &ANaveAereaJugador::StartFiringBomba);
-	PlayerInputComponent->BindAction(FName("FireBomba"), IE_Released, this, &ANaveAereaJugador::StopFiringBomba);
-	PlayerInputComponent->BindAction(FName("FireMisil"), IE_Pressed, this, &ANaveAereaJugador::StartFiringMisil);
-	PlayerInputComponent->BindAction(FName("FireMisil"), IE_Released, this, &ANaveAereaJugador::StopFiringMisil);
-	PlayerInputComponent->BindAction(FName("FireRayo"), IE_Pressed, this, &ANaveAereaJugador::StartFiringRayo);
-	PlayerInputComponent->BindAction(FName("FireRayo"), IE_Released, this, &ANaveAereaJugador::StopFiringRayo);
 	
-	PlayerInputComponent->BindAction(TEXT("Fire"), IE_Pressed, this, &ANaveAereaJugador::Fire);
+	PlayerInputComponent->BindAction(TEXT("FireBala"), IE_Pressed, this, &ANaveAereaJugador::FireBala);
+	PlayerInputComponent->BindAction(TEXT("FireBomba"), IE_Pressed, this, &ANaveAereaJugador::FireBomba);
+	PlayerInputComponent->BindAction(TEXT("FireMisil"), IE_Pressed, this, &ANaveAereaJugador::FireMisil);
+	PlayerInputComponent->BindAction(TEXT("FireRayo"), IE_Pressed, this, &ANaveAereaJugador::FireRayo);
 	PlayerInputComponent->BindAction(TEXT("DropItem"), EInputEvent::IE_Pressed, this, &ANaveAereaJugador::DropItem);
 	PlayerInputComponent->BindAction(TEXT("ShowInventory"), IE_Pressed, this, &ANaveAereaJugador::ShowInventory);
 	PlayerInputComponent->BindAction(TEXT("ConsumirVelocidad"), IE_Pressed, this, &ANaveAereaJugador::ConsumirVelocidad);
 	PlayerInputComponent->BindAction(TEXT("ConsumirVida"), IE_Pressed, this, &ANaveAereaJugador::ConsumirVida);
 	PlayerInputComponent->BindAction(TEXT("DisminuirVelocidad"), IE_Pressed, this, &ANaveAereaJugador::DisminuirVelocidad);
 	PlayerInputComponent->BindAction(TEXT("DisminuirVida"), IE_Pressed, this, &ANaveAereaJugador::DisminuirVida);
-	PlayerInputComponent->BindAction(TEXT("FastShoot"), IE_Pressed, this, &ANaveAereaJugador::FastShoot);
-	PlayerInputComponent->BindAction(TEXT("SlowShoot"), IE_Pressed, this, &ANaveAereaJugador::SlowShoot);
+	PlayerInputComponent->BindAction(TEXT("VisibilityOff"), IE_Pressed, this, &ANaveAereaJugador::VisibilityOff);
+	PlayerInputComponent->BindAction(TEXT("VisibilityOn"), IE_Pressed, this, &ANaveAereaJugador::VisibilityOn);
 
 }
 
-void ANaveAereaJugador::MoveUp(float AxisValue)
-{
-	Current_X_Velocity = MaxVelocity * AxisValue;
 
-}
-
-void ANaveAereaJugador::MoveRight(float AxisValue)
-{
-	Current_Y_Velocity = MaxVelocity * AxisValue;
-
-}
 
 void ANaveAereaJugador::Tick(float DeltaSeconds)
 {
 	Super::Tick(DeltaSeconds);
-	
-	if (Current_X_Velocity != 0.0f || Current_Y_Velocity != 0.0f)
-	{
-		New_Location = FVector(Current_Location.X + (Current_X_Velocity * DeltaSeconds),
-			Current_Location.Y + (Current_Y_Velocity * DeltaSeconds), 0);
 
-		this->SetActorLocation(New_Location);
-
-		Current_Location = New_Location;
-
-	}
-
-	//ProjectileBala
-
-	if (bBalaIsFiring)
-	{
-		if (BalaTimeSinceLastShot > FireBalaRate)
-		{
-			FireWeaponBala();
-			BalaTimeSinceLastShot = 0.0f;
-		}
-	}
-
-	BalaTimeSinceLastShot += DeltaSeconds;
-
-	//ProjectileBomba
-
-	if (bBombaIsFiring)
-	{
-		if (BombaTimeSinceLastShot > FireBombaRate)
-		{
-			FireWeaponBomba();
-			BombaTimeSinceLastShot = 0.0f;
-		}
-	}
-
-	BombaTimeSinceLastShot += DeltaSeconds;
-
-	//ProjectileMisil
-
-	if (bMisilIsFiring)
-	{
-		if (MisilTimeSinceLastShot > FireMisilRate)
-		{
-			FireWeaponMisil();
-			MisilTimeSinceLastShot = 0.0f;
-		}
-	}
-
-	MisilTimeSinceLastShot += DeltaSeconds;
-
-	//ProjectileRayo
-
-	if (bRayoIsFiring)
-	{
-		if (RayoTimeSinceLastShot > FireRayoRate)
-		{
-			FireWeaponRayo();
-			RayoTimeSinceLastShot = 0.0f;
-		}
-	}
-
-	RayoTimeSinceLastShot += DeltaSeconds;
-	
 	// Find movement direction
 	const float ForwardValue = GetInputAxisValue(MoveForwardBinding);
 	const float RightValue = GetInputAxisValue(MoveRightBinding);
@@ -236,54 +129,136 @@ void ANaveAereaJugador::Tick(float DeltaSeconds)
 
 }
 
-void ANaveAereaJugador::Fire() {
+void ANaveAereaJugador::FireBala()
+{
 	bCanFire = true;
-	UE_LOG(LogTemp, Warning, TEXT("Se presiono la barra espaciadora"));
-	// Create fire direction vector
-	
-	UE_LOG(LogTemp, Warning, TEXT("FireForwardValue: %f FireRightValue: %f"), FireForwardValue, FireRightValue);
+
 	const FVector FireDirection = FVector(FireForwardValue, FireRightValue, 0.f).GetClampedToMaxSize(1.0f);
-	// Try and fire a shot
-	FireShot(FireDirection);
+	FireShotBala(FireDirection);
+
 }
 
-void ANaveAereaJugador::FireShot(FVector FireDirection)
+void ANaveAereaJugador::FireShotBala(FVector FireDirection)
 {
-	// If it's ok to fire again
 	if (bCanFire == true)
 	{
-		
-		// If we are pressing fire stick in a direction
-		//if (FireDirection.SizeSquared() > 0.0f)
-		//{
-			const FRotator FireRotation = FireDirection.Rotation();
-			// Spawn projectile at an offset from this pawn
-			const FVector SpawnLocation = GetActorLocation() + FireRotation.RotateVector(GunOffset);
+		const FRotator FireRotation = FireDirection.Rotation();
+		// Spawn projectile at an offset from this pawn
+		const FVector SpawnLocation = GetActorLocation() + FireRotation.RotateVector(GunOffset);
 
-			UWorld* const World = GetWorld();
-			if (World != nullptr)
-			{
-				// spawn the projectile
-				World->SpawnActor<AProyectil>(SpawnLocation, FireRotation);
-				//UE_LOG(LogTemp, Warning, TEXT("SpawnLocation(X, Y) = %s, %s FireRotation(X, Y) =  s, s"), SpawnLocation.X, SpawnLocation.Y);
-				//UE_LOG(LogTemp, Warning, TEXT("World not nullptr"));
-			}
+		UWorld* const World = GetWorld();
+		if (World != nullptr)
+		{
+			// spawn the projectile
+			World->SpawnActor<AProyectil_Bala>(SpawnLocation, FireRotation);
 
-			
+		}
 
-			//bCanFire = false;
-			World->GetTimerManager().SetTimer(TimerHandle_ShotTimerExpired, this, &ANaveAereaJugador::ShotTimerExpired, FireRate);
+		World->GetTimerManager().SetTimer(TimerHandle_ShotTimerExpired, this, &ANaveAereaJugador::ShotTimerExpired, FireRate);
 
-			// try and play the sound if specified
+		bCanFire = false;
 
-		/*	if (FireSound != nullptr)
-			{
-				UGameplayStatics::PlaySoundAtLocation(this, FireSound, GetActorLocation());
-			}*/
-
-			bCanFire = false;
-		//}
 	}
+
+}
+
+void ANaveAereaJugador::FireBomba()
+{
+	bCanFire = true;
+
+	const FVector FireDirection = FVector(FireForwardValue, FireRightValue, 0.f).GetClampedToMaxSize(1.0f);
+	FireShotBomba(FireDirection);
+
+}
+
+void ANaveAereaJugador::FireShotBomba(FVector FireDirection)
+{
+	if (bCanFire == true)
+	{
+		const FRotator FireRotation = FireDirection.Rotation();
+		// Spawn projectile at an offset from this pawn
+		const FVector SpawnLocation = GetActorLocation() + FireRotation.RotateVector(GunOffset);
+
+		UWorld* const World = GetWorld();
+		if (World != nullptr)
+		{
+			// spawn the projectile
+			World->SpawnActor<AProyectil_Bomba>(SpawnLocation, FireRotation);
+
+		}
+
+		World->GetTimerManager().SetTimer(TimerHandle_ShotTimerExpired, this, &ANaveAereaJugador::ShotTimerExpired, FireRate);
+
+		bCanFire = false;
+
+	}
+
+}
+
+void ANaveAereaJugador::FireMisil()
+{
+	bCanFire = true;
+
+	const FVector FireDirection = FVector(FireForwardValue, FireRightValue, 0.f).GetClampedToMaxSize(1.0f);
+	FireShotMisil(FireDirection);
+
+}
+
+void ANaveAereaJugador::FireShotMisil(FVector FireDirection)
+{
+	if (bCanFire == true)
+	{
+		const FRotator FireRotation = FireDirection.Rotation();
+		// Spawn projectile at an offset from this pawn
+		const FVector SpawnLocation = GetActorLocation() + FireRotation.RotateVector(GunOffset);
+
+		UWorld* const World = GetWorld();
+		if (World != nullptr)
+		{
+			// spawn the projectile
+			World->SpawnActor<AProyectil_Misil>(SpawnLocation, FireRotation);
+
+		}
+
+		World->GetTimerManager().SetTimer(TimerHandle_ShotTimerExpired, this, &ANaveAereaJugador::ShotTimerExpired, FireRate);
+
+		bCanFire = false;
+
+	}
+
+}
+
+void ANaveAereaJugador::FireRayo()
+{
+	bCanFire = true;
+
+	const FVector FireDirection = FVector(FireForwardValue, FireRightValue, 0.f).GetClampedToMaxSize(1.0f);
+	FireShotRayo(FireDirection);
+
+}
+
+void ANaveAereaJugador::FireShotRayo(FVector FireDirection)
+{
+	if (bCanFire == true)
+	{
+		const FRotator FireRotation = FireDirection.Rotation();
+		// Spawn projectile at an offset from this pawn
+		const FVector SpawnLocation = GetActorLocation() + FireRotation.RotateVector(GunOffset);
+
+		UWorld* const World = GetWorld();
+		if (World != nullptr)
+		{
+			// spawn the projectile
+			World->SpawnActor<AProyectil_Rayo>(SpawnLocation, FireRotation);
+
+		}
+
+		World->GetTimerManager().SetTimer(TimerHandle_ShotTimerExpired, this, &ANaveAereaJugador::ShotTimerExpired, FireRate);
+
+		bCanFire = false;
+
+	}
+
 }
 
 void ANaveAereaJugador::ShotTimerExpired()
@@ -352,16 +327,6 @@ void ANaveAereaJugador::ShowInventory()
 
 }
 
-void ANaveAereaJugador::Test()
-{
-	//TSet<int> EjemploSet;
-	//for (auto It = EjemploSet.CreateConstIterator(); It; ++It)
-	//{
-		//GEngine->AddOnScreenDebugMessage(-1, 1, FColor::Red, FString::Printf(TEXT("%s = %d"), *Elem.Key, Elem.Value));
-	//}
-
-}
-
 void ANaveAereaJugador::ConsumirVelocidad()
 {
 	FString n = "Velocidad";
@@ -372,7 +337,7 @@ void ANaveAereaJugador::ConsumirVelocidad()
 			if (pair.Value > 0)
 			{
 				pair.Value = pair.Value - 1;
-				MaxVelocity = MaxVelocity + 500;
+				MoveSpeed += 500.0f;
 				
 			}
 			break;
@@ -411,7 +376,7 @@ void ANaveAereaJugador::DisminuirVelocidad()
 			if (pair.Value > 0)
 			{
 				pair.Value = pair.Value - 1;
-				MaxVelocity = MaxVelocity - 500;
+				MoveSpeed -= 500.0f;
 				
 			}
 			break;
@@ -440,9 +405,9 @@ void ANaveAereaJugador::DisminuirVida()
 
 }
 
-void ANaveAereaJugador::FastShoot()
+void ANaveAereaJugador::VisibilityOff()
 {
-	FString n = "DisparoRapido";
+	FString n = "Visibility_Off";
 	for (auto& pair : ShipInfo)
 	{
 		if (pair.Key == n)
@@ -450,7 +415,7 @@ void ANaveAereaJugador::FastShoot()
 			if (pair.Value > 0)
 			{
 				pair.Value = pair.Value - 1;
-				FireBalaRate = FireBalaRate - 0.08;
+				ShipMeshComponent->SetVisibility(false);
 
 			}
 			break;
@@ -459,9 +424,9 @@ void ANaveAereaJugador::FastShoot()
 
 }
 
-void ANaveAereaJugador::SlowShoot()
+void ANaveAereaJugador::VisibilityOn()
 {
-	FString n = "DisparoLento";
+	FString n = "Visibility_On";
 	for (auto& pair : ShipInfo)
 	{
 		if (pair.Key == n)
@@ -469,7 +434,7 @@ void ANaveAereaJugador::SlowShoot()
 			if (pair.Value > 0)
 			{
 				pair.Value = pair.Value - 1;
-				FireBalaRate = FireBalaRate + 0.1;
+				ShipMeshComponent->SetVisibility(true);
 
 			}
 			break;
@@ -478,99 +443,15 @@ void ANaveAereaJugador::SlowShoot()
 
 }
 
-//ProjectileBala
-
-void ANaveAereaJugador::StartFiringBala()
+void ANaveAereaJugador::CollectablePickup1()
 {
-	bBalaIsFiring = true;
+	MoveSpeed += 500.0f;
+	GEngine->AddOnScreenDebugMessage(-1, 1, FColor::Green, FString::Printf(TEXT("Velocidad del jugador aumentada %f"), MoveSpeed));
 
 }
 
-void ANaveAereaJugador::StopFiringBala()
+void ANaveAereaJugador::CollectablePickup2()
 {
-	bBalaIsFiring = false;
-
+	this->Destroy();
+	GEngine->AddOnScreenDebugMessage(-1, 1, FColor::Red, FString::Printf(TEXT("ELIMINADO")));
 }
-
-void ANaveAereaJugador::FireWeaponBala()
-{
-	FActorSpawnParameters Params = {};
-	Params.Owner = this;
-
-	AActor* SpawnedProjectileBala = GetWorld()->SpawnActor(Projectile_Bala_BP,
-		&Current_Location, &Current_Rotation, Params);
-
-}
-
-//ProjectileBomba
-
-void ANaveAereaJugador::StartFiringBomba()
-{
-	bBombaIsFiring = true;
-
-}
-
-void ANaveAereaJugador::StopFiringBomba()
-{
-	bBombaIsFiring = false;
-
-}
-
-void ANaveAereaJugador::FireWeaponBomba()
-{
-	FActorSpawnParameters Params = {};
-	Params.Owner = this;
-
-	AActor* SpawnedProjectileBomba = GetWorld()->SpawnActor(Projectile_Bomba_BP,
-		&Current_Location, &Current_Rotation, Params);
-
-}
-
-//ProjectileMisil
-
-void ANaveAereaJugador::StartFiringMisil()
-{
-	bMisilIsFiring = true;
-
-}
-
-void ANaveAereaJugador::StopFiringMisil()
-{
-	bMisilIsFiring = false;
-
-}
-
-void ANaveAereaJugador::FireWeaponMisil()
-{
-	FActorSpawnParameters Params = {};
-	Params.Owner = this;
-
-	AActor* SpawnedProjectileMisil = GetWorld()->SpawnActor(Projectile_Misil_BP,
-		&Current_Location, &Current_Rotation, Params);
-
-}
-
-//ProjectileRayo
-
-void ANaveAereaJugador::StartFiringRayo()
-{
-	bRayoIsFiring = true;
-
-}
-
-void ANaveAereaJugador::StopFiringRayo()
-{
-	bRayoIsFiring = false;
-
-}
-
-void ANaveAereaJugador::FireWeaponRayo()
-{
-	FActorSpawnParameters Params = {};
-	Params.Owner = this;
-
-	AActor* SpawnedProjectileRayo = GetWorld()->SpawnActor(Projectile_Rayo_BP,
-		&Current_Location, &Current_Rotation, Params);
-
-}
-
