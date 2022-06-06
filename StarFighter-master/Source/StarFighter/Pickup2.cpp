@@ -36,8 +36,8 @@ void APickup2::Tick(float DeltaTime)
 	Super::Tick(DeltaTime);
 
 	FVector NewLocation = this->GetActorLocation();
-	NewLocation.X -= DeltaTime * 50.0f;
-	NewLocation.Y -= DeltaTime * 50.0f;
+	NewLocation.X -= DeltaTime * 70.0f;
+	NewLocation.Y += DeltaTime * 70.0f;
 	NewLocation.Z = 0;
 	this->SetActorLocation(NewLocation);
 

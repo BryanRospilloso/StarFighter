@@ -446,12 +446,12 @@ void ANaveAereaJugador::VisibilityOn()
 void ANaveAereaJugador::CollectablePickup1()
 {
 	MoveSpeed += 500.0f;
-	GEngine->AddOnScreenDebugMessage(-1, 1, FColor::Green, FString::Printf(TEXT("Velocidad del jugador aumentada %f"), MoveSpeed));
+	GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Green, FString::Printf(TEXT("Velocidad del jugador aumentada %f"), MoveSpeed));
 
 }
 
 void ANaveAereaJugador::CollectablePickup2()
 {
 	this->Destroy();
-	GEngine->AddOnScreenDebugMessage(-1, 1, FColor::Red, FString::Printf(TEXT("ELIMINADO")));
+	GEngine->AddOnScreenDebugMessage(-1, 15.f, FColor::Red, FString::Printf(TEXT("ELIMINADO")));
 }
