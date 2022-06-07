@@ -62,7 +62,7 @@ void ANaveNodrizaAereaEnemiga::Tick(float DeltaTime)
 
 	//Current_Location.X += FMath::Sin(TotalTime + RandomStart);
 	Current_Location.X -= 1.0f;
-	//Current_Rotation.Roll += 2.0f;
+	//Current_Rotation.Pitch += 1.0f;
 
 	this->SetActorLocation(Current_Location - (Current_Velocity * DeltaTime));
 	//this->SetActorRotation(Current_Rotation);
@@ -70,7 +70,6 @@ void ANaveNodrizaAereaEnemiga::Tick(float DeltaTime)
 	//handle shooting
 	
 	TotalTime += DeltaTime;
-	//TimeSinceLastShot += DeltaTime;
 
 	TimeSinceLastShot+= DeltaTime;
 	fBurstDelay += DeltaTime;
