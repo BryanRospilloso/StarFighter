@@ -502,7 +502,7 @@ void ANaveAereaJugador::CollectableCapsulaEnergia1()
 void ANaveAereaJugador::CollectableCapsulaVida1()
 {
 	Vida += 1;
-	GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Blue, FString::Printf(TEXT("Vida del jugador aumentada %f"), Vida));
+	GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Blue, FString::Printf(TEXT("Vida del jugador aumentada %i"), Vida));
 }
 
 void ANaveAereaJugador::SetSlingShot(AActor* SlingShotObj)
