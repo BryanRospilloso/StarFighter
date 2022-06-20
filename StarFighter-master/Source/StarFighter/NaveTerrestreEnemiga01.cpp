@@ -44,7 +44,7 @@ void ANaveTerrestreEnemiga01::BeginPlay()
 
 	ThisWorld = GetWorld();
 
-	GetWorldTimerManager().SetTimer(MemberTimerHandle, this, &ANaveTerrestreEnemiga01::ShowContadorBalas, 60.0f, true, 60.0f); //mostrara los disparos en 60 segundos
+	GetWorldTimerManager().SetTimer(MemberTimerHandle, this, &ANaveTerrestreEnemiga01::ShowContadorBalas, 20.0f, true, 20.0f); //mostrara los disparos en 60 segundos
 
 }
 

@@ -4,22 +4,25 @@
 
 #include "CoreMinimal.h"
 #include "GameFramework/Actor.h"
-#include "TorretasPlane.h"
-#include "Torretas.generated.h"
+#include "SlingShot.h"
+#include "SpaceShipShot.h"
+#include "ShootAdapter.generated.h"
+
+class ASpaceShipShot;
 
 UCLASS()
-class STARFIGHTER_API ATorretas : public AActor, public ITorretasPlane
+class STARFIGHTER_API AShootAdapter : public AActor, public ISlingShot
 {
 	GENERATED_BODY()
 	
 public:	
 	// Sets default values for this actor's properties
-	ATorretas();
+	AShootAdapter();
 
 private:
-	FString SoporteTorreta;
-	FString CuerpoTorreta;
-	FString ArmasTorreta;
+
+	UPROPERTY()
+		ASpaceShipShot* Disparar;
 
 protected:
 	// Called when the game starts or when spawned
@@ -29,10 +32,6 @@ public:
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;
 
-	void SetSoporteTorreta(FString mySoporteTorreta);
-	void SetCuerpoTorreta(FString myCuerpoTorreta);
-	void SetArmasTorreta(FString myArmasTorreta);
-
-	void TorretasCharacteristics();
+	virtual void Sling() override;
 
 };

@@ -4,6 +4,7 @@
 
 #include "CoreMinimal.h"
 #include "GameFramework/GameModeBase.h"
+#include "Enemy.h"
 #include "StarFighterGameModeBase.generated.h"
 
 /**
@@ -14,22 +15,18 @@ class STARFIGHTER_API AStarFighterGameModeBase : public AGameModeBase
 {
 	GENERATED_BODY()
 
+public:
+	AStarFighterGameModeBase();
+
+	//The main Enemy Actor
+	IEnemy* Enemy;
+
 protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
 
 public:
-	AStarFighterGameModeBase();
-
-	template<typename T>
-	T SpawnNave();
-
-
+	// Called every frame
+	virtual void Tick(float DeltaTime) override;
 
 };
-
-template<typename T>
-T AStarFighterGameModeBase::SpawnNave() {
-	
-	return GetWorld()->SpawnActor<T>(FVector::ZeroVector, FRotator::ZeroRotator);
-}

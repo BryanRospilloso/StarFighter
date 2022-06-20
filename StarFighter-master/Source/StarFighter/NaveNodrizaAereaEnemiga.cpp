@@ -90,7 +90,7 @@ void ANaveNodrizaAereaEnemiga::Tick(float DeltaTime)
 			GetWorld()->SpawnActor<AProyectil_Bala>(SpawnLocation - 50.0f, FireRotation);
 			GetWorld()->SpawnActor<AProyectil_Bala>(SpawnLocation - 100.0f, FireRotation);
 
-			UE_LOG(LogTemp, Warning, TEXT("Disparo"));
+			//UE_LOG(LogTemp, Warning, TEXT("Disparo"));
 			fBurstDelay = 0.0f;
 			TimeSinceLastShot = 0.0f;
 

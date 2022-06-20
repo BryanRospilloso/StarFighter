@@ -5,6 +5,7 @@
 #include "CoreMinimal.h"
 #include "NaveAerea.h"
 #include "InventoryComponent.h"
+#include "SlingShot.h"
 #include "NaveAereaJugador.generated.h"
 
 UCLASS()
@@ -49,6 +50,8 @@ public:
 
 	/* Handler for the fire timer expiry */
 	void ShotTimerExpired();
+
+	//void Fire();
 
 	/** Offset from the ships location to spawn projectiles */
 	UPROPERTY(Category = Gameplay, EditAnywhere, BlueprintReadWrite)
@@ -116,6 +119,8 @@ private:
 	float FireForwardValue;
 	float FireRightValue;
 
+	ISlingShot* SlingShot;
+
 public:
 	//Funcion que nos permitira aumentar la vida y armadura de nuestra nave cuando recojamos un objeto
 
@@ -124,5 +129,22 @@ public:
 	//Funcion que nos permitira reducir la velocidad de nuestra nave
 
 	void CollectablePickup2();
+
+	//Set the Weapon Actor
+	void SetSlingShot(AActor* SlingShotObj);
+
+	//Fire with the SlingShot
+	void Sling1();
+
+	void CollectableCapsulaArma1();
+	float Danio;
+
+	void CollectableCapsulaEscudo1();
+	float Escudo;
+
+	void CollectableCapsulaEnergia1();
+	float Energia;
+
+	void CollectableCapsulaVida1();
 
 };

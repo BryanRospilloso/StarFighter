@@ -2,21 +2,12 @@
 
 
 #include "Torretas.h"
-#include "Components/StaticMeshComponent.h"
-#include "UObject/ConstructorHelpers.h"
-#include "Engine/StaticMesh.h"
 
 // Sets default values
 ATorretas::ATorretas()
 {
-	static ConstructorHelpers::FObjectFinder<UStaticMesh> TurretMesh(TEXT("/Game/Meshes/Nave_3D.Nave_3D"));
-
 	// Set this actor to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
 	PrimaryActorTick.bCanEverTick = true;
-
-	TorretaMesh = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("Torreta"));
-	RootComponent = TorretaMesh;
-	TorretaMesh->SetStaticMesh(TurretMesh.Object);
 
 }
 

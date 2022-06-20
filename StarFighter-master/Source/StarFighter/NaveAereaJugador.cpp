@@ -11,6 +11,7 @@
 #include "GameFramework/SpringArmComponent.h"
 #include "Kismet/GameplayStatics.h"
 #include "Engine/World.h"
+#include "ShootAdapter.h"
 
 const FName ANaveAereaJugador::MoveForwardBinding("MoveForward");
 const FName ANaveAereaJugador::MoveRightBinding("MoveRight");
@@ -35,8 +36,17 @@ ANaveAereaJugador::ANaveAereaJugador()
 	// Movement
 	MoveSpeed = 1000.0f;
 
+	//Damage
+	Danio = 10.0f;
+
 	// Health
 	Vida = 5;
+
+	//Energy
+	Energia = 0.0f;
+
+	//Armor
+	Escudo = 0.0f;
 
 	// Weapon
 	GunOffset = FVector(90.f, 0.f, 0.f);
@@ -60,6 +70,10 @@ void ANaveAereaJugador::BeginPlay()
 {
 	Super::BeginPlay();
 
+	//Spawn the Shoot Adapter
+	AShootAdapter* ShootAdapter = GetWorld()->SpawnActor<AShootAdapter>(AShootAdapter::StaticClass());
+	SetSlingShot(ShootAdapter);
+
 }
 
 void ANaveAereaJugador::SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent)
@@ -74,6 +88,7 @@ void ANaveAereaJugador::SetupPlayerInputComponent(class UInputComponent* PlayerI
 	PlayerInputComponent->BindAction(TEXT("FireBomba"), IE_Pressed, this, &ANaveAereaJugador::FireBomba);
 	PlayerInputComponent->BindAction(TEXT("FireMisil"), IE_Pressed, this, &ANaveAereaJugador::FireMisil);
 	PlayerInputComponent->BindAction(TEXT("FireRayo"), IE_Pressed, this, &ANaveAereaJugador::FireRayo);
+	//PlayerInputComponent->BindAction(TEXT("Fire"), IE_Pressed, this, &ANaveAereaJugador::Fire);
 	PlayerInputComponent->BindAction(TEXT("DropItem"), EInputEvent::IE_Pressed, this, &ANaveAereaJugador::DropItem);
 	PlayerInputComponent->BindAction(TEXT("ShowInventory"), IE_Pressed, this, &ANaveAereaJugador::ShowInventory);
 	PlayerInputComponent->BindAction(TEXT("ConsumirVelocidad"), IE_Pressed, this, &ANaveAereaJugador::ConsumirVelocidad);
@@ -266,6 +281,12 @@ void ANaveAereaJugador::ShotTimerExpired()
 	bCanFire = true;
 }
 
+/*void ANaveAereaJugador::Fire()
+{
+	UE_LOG(LogTemp, Warning, TEXT("Se llamo a la funcion Fire correctamente"));
+	Sling1();
+}*/
+
 void ANaveAereaJugador::DropItem()
 {
 	if (ShipInventory->CurrentInventory.Num() == 0)
@@ -322,7 +343,7 @@ void ANaveAereaJugador::ShowInventory()
 
 	for (auto& Elem : ShipInfo)
 	{
-		GEngine->AddOnScreenDebugMessage(-1, 1, FColor::Red, FString::Printf(TEXT("%s = %d"), *Elem.Key, Elem.Value));
+		GEngine->AddOnScreenDebugMessage(-1, 15, FColor::Orange, FString::Printf(TEXT("%s = %d"), *Elem.Key, Elem.Value));
 	}
 
 }
@@ -338,6 +359,7 @@ void ANaveAereaJugador::ConsumirVelocidad()
 			{
 				pair.Value = pair.Value - 1;
 				MoveSpeed += 500.0f;
+				GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Blue, FString::Printf(TEXT("Velocidad del jugador aumentada %f"), MoveSpeed));
 				
 			}
 			break;
@@ -357,7 +379,7 @@ void ANaveAereaJugador::ConsumirVida()
 			{
 				pair.Value = pair.Value - 1;
 				Vida = Vida + 1;
-				UE_LOG(LogTemp, Warning, TEXT("Mas una vida"));
+				GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Blue, FString::Printf(TEXT("Vida del jugador aumentada %f"), Vida));
 
 			}
 			break;
@@ -377,6 +399,7 @@ void ANaveAereaJugador::DisminuirVelocidad()
 			{
 				pair.Value = pair.Value - 1;
 				MoveSpeed -= 500.0f;
+				GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Blue, FString::Printf(TEXT("Velocidad del jugador disminuida %f"), MoveSpeed));
 				
 			}
 			break;
@@ -396,7 +419,7 @@ void ANaveAereaJugador::DisminuirVida()
 			{
 				pair.Value = pair.Value - 1;
 				Vida = Vida - 1;
-				UE_LOG(LogTemp, Warning, TEXT("Menos una vida"));
+				GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Blue, FString::Printf(TEXT("Vida del jugador disminuida %f"), Vida));
 
 			}
 			break;
@@ -416,6 +439,7 @@ void ANaveAereaJugador::VisibilityOff()
 			{
 				pair.Value = pair.Value - 1;
 				ShipMeshComponent->SetVisibility(false);
+				GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Blue, TEXT("Invisibilidad activada"));
 
 			}
 			break;
@@ -435,6 +459,7 @@ void ANaveAereaJugador::VisibilityOn()
 			{
 				pair.Value = pair.Value - 1;
 				ShipMeshComponent->SetVisibility(true);
+				GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Blue, TEXT("Invisibilidad desactivada"));
 
 			}
 			break;
@@ -446,7 +471,7 @@ void ANaveAereaJugador::VisibilityOn()
 void ANaveAereaJugador::CollectablePickup1()
 {
 	MoveSpeed += 500.0f;
-	GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Green, FString::Printf(TEXT("Velocidad del jugador aumentada %f"), MoveSpeed));
+	GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Blue, FString::Printf(TEXT("Velocidad del jugador aumentada %f"), MoveSpeed));
 
 }
 
@@ -454,4 +479,50 @@ void ANaveAereaJugador::CollectablePickup2()
 {
 	this->Destroy();
 	GEngine->AddOnScreenDebugMessage(-1, 15.f, FColor::Red, FString::Printf(TEXT("ELIMINADO")));
+}
+
+void ANaveAereaJugador::CollectableCapsulaArma1()
+{
+	Danio += 10.0f;
+	GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Blue, FString::Printf(TEXT("Danio inflingido por el jugador aumentado %f"), Danio));
+}
+
+void ANaveAereaJugador::CollectableCapsulaEscudo1()
+{
+	Escudo += 10.0f;
+	GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Blue, FString::Printf(TEXT("Escudo del jugador aumentado %f"), Escudo));
+}
+
+void ANaveAereaJugador::CollectableCapsulaEnergia1()
+{
+	Energia += 10.0f;
+	GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Blue, FString::Printf(TEXT("Energia del jugador aumentada %f"), Energia));
+}
+
+void ANaveAereaJugador::CollectableCapsulaVida1()
+{
+	Vida += 1;
+	GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Blue, FString::Printf(TEXT("Vida del jugador aumentada %f"), Vida));
+}
+
+void ANaveAereaJugador::SetSlingShot(AActor* SlingShotObj)
+{
+	//Cast the passed Actor and set the Weapon
+	SlingShot = Cast<ISlingShot>(SlingShotObj);
+	if (!SlingShot) //Log Error if cast fails
+	{
+		GEngine->AddOnScreenDebugMessage(-1, 15.f, FColor::Red, TEXT("Invalid Cast! See Output log for more details"));
+		UE_LOG(LogTemp, Error, TEXT("SetSlingShot(): The Actor is not a	SlingShot!Are you sure that the Actor implements that interface ? "));
+	}
+}
+
+void ANaveAereaJugador::Sling1()
+{
+	if (!SlingShot) {
+		UE_LOG(LogTemp, Error, TEXT("Sling(): SlingShot is NULL, make sure it's initialized."));
+		return;
+	}
+
+	//Fire
+	SlingShot->Sling();
 }

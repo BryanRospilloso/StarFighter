@@ -4,22 +4,22 @@
 
 #include "CoreMinimal.h"
 #include "GameFramework/Actor.h"
-#include "TorretasPlane.h"
-#include "Torretas.generated.h"
+#include "Enemy.h"
+#include "ConcreteEnemy.generated.h"
+
+class UStaticMeshComponent;
 
 UCLASS()
-class STARFIGHTER_API ATorretas : public AActor, public ITorretasPlane
+class STARFIGHTER_API AConcreteEnemy : public AActor, public IEnemy
 {
 	GENERATED_BODY()
 	
 public:	
 	// Sets default values for this actor's properties
-	ATorretas();
+	AConcreteEnemy();
 
-private:
-	FString SoporteTorreta;
-	FString CuerpoTorreta;
-	FString ArmasTorreta;
+	UPROPERTY()
+		UStaticMeshComponent* ConcreteEnemyMesh;
 
 protected:
 	// Called when the game starts or when spawned
@@ -29,10 +29,9 @@ public:
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;
 
-	void SetSoporteTorreta(FString mySoporteTorreta);
-	void SetCuerpoTorreta(FString myCuerpoTorreta);
-	void SetArmasTorreta(FString myArmasTorreta);
-
-	void TorretasCharacteristics();
+public:
+	virtual void Fight() override {}
+	virtual int GetDamage() override { return 10; }
+	virtual void Die() override {}
 
 };

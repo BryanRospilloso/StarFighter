@@ -4,22 +4,17 @@
 
 #include "CoreMinimal.h"
 #include "GameFramework/Actor.h"
-#include "TorretasPlane.h"
-#include "Torretas.generated.h"
+#include "Proyectil_Bala.h"
+#include "Shoot.generated.h"
 
 UCLASS()
-class STARFIGHTER_API ATorretas : public AActor, public ITorretasPlane
+class STARFIGHTER_API AShoot : public AActor
 {
 	GENERATED_BODY()
 	
 public:	
 	// Sets default values for this actor's properties
-	ATorretas();
-
-private:
-	FString SoporteTorreta;
-	FString CuerpoTorreta;
-	FString ArmasTorreta;
+	AShoot();
 
 protected:
 	// Called when the game starts or when spawned
@@ -29,10 +24,18 @@ public:
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;
 
-	void SetSoporteTorreta(FString mySoporteTorreta);
-	void SetCuerpoTorreta(FString myCuerpoTorreta);
-	void SetArmasTorreta(FString myArmasTorreta);
+	//ProjectileBala
 
-	void TorretasCharacteristics();
+	void FireWeaponBala();
+	void StartFiringBala();
+	void StopFiringBala();
+	bool bBalaIsFiring;
+	float FireBalaRate;
+	float BalaTimeSinceLastShot;
+
+	UPROPERTY(EditAnywhere)
+		TSubclassOf<AProyectil_Bala> Proyectil_Bala_BP;
+
+	UWorld* ThisWorld;
 
 };

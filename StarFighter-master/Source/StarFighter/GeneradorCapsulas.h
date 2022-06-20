@@ -4,22 +4,21 @@
 
 #include "CoreMinimal.h"
 #include "GameFramework/Actor.h"
-#include "TorretasPlane.h"
-#include "Torretas.generated.h"
+#include "Capsula.h"
+#include "GeneradorCapsulas.generated.h"
 
 UCLASS()
-class STARFIGHTER_API ATorretas : public AActor, public ITorretasPlane
+class STARFIGHTER_API AGeneradorCapsulas : public AActor
 {
 	GENERATED_BODY()
 	
 public:	
 	// Sets default values for this actor's properties
-	ATorretas();
+	AGeneradorCapsulas();
 
-private:
-	FString SoporteTorreta;
-	FString CuerpoTorreta;
-	FString ArmasTorreta;
+	virtual ACapsula* FabricarCapsula(FString NombreTipoCapsula) PURE_VIRTUAL(AGeneradorCapsulas::FabricarCapsula, return nullptr;);
+
+	ACapsula* GetCapsula(FString TipoCapsula);
 
 protected:
 	// Called when the game starts or when spawned
@@ -28,11 +27,5 @@ protected:
 public:	
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;
-
-	void SetSoporteTorreta(FString mySoporteTorreta);
-	void SetCuerpoTorreta(FString myCuerpoTorreta);
-	void SetArmasTorreta(FString myArmasTorreta);
-
-	void TorretasCharacteristics();
 
 };
