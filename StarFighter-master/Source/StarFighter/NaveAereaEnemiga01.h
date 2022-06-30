@@ -4,15 +4,24 @@
 
 #include "CoreMinimal.h"
 #include "NaveAerea.h"
+#include "Subscriber.h"
+#include "Morph.h"
 #include "NaveAereaEnemiga01.generated.h"
 
+class AClockTower;
+
 UCLASS()
-class STARFIGHTER_API ANaveAereaEnemiga01 : public ANaveAerea
+class STARFIGHTER_API ANaveAereaEnemiga01 : public ANaveAerea, public ISubscriber, public IMorph
 {
 	GENERATED_BODY()
 
 public:
     ANaveAereaEnemiga01();
+
+private:
+    //The Clock Tower of this Subscriber
+    UPROPERTY()
+        AClockTower* ClockTower;
 
 protected:
     virtual void BeginPlay() override;
@@ -66,8 +75,15 @@ private:
     /** Handle for efficient management of ShotTimerExpired timer */
     FTimerHandle TimerHandle_ShotTimerExpired;
 
+public:
+    //Called when the Plublisher changed its state, it will execute this Subscriber routine
+    virtual void Update(class APublisher* Publisher) override;
+    //Execute this Subscriber routine
+    virtual void Morph();
+    //Set the Clock Tower of this Subscriber
+    void SetClockTower(AClockTower* myClockTower);
 
-    //float FireForwardValue;
-   // float FireRightValue;
+    //Called when this Subscriber is destroyed, it will unsubscribe this from the Clock Tower
+    virtual void Destroyed() override;
 	
 };

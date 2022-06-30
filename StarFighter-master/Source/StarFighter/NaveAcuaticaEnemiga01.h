@@ -58,6 +58,7 @@ public:
 
     bool bHit;
     bool bDead;
+    bool NaveDestruida;
 
     UWorld* ThisWorld;
 
@@ -66,6 +67,8 @@ public:
 
     UPROPERTY(EditAnywhere)
         TSubclassOf<APickup2> Pickup2;
+
+    void SetEstadoNave();
 
 private:
     /* Flag to control firing  */

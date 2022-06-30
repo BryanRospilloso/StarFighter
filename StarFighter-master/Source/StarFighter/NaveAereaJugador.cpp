@@ -74,6 +74,10 @@ void ANaveAereaJugador::BeginPlay()
 	AShootAdapter* ShootAdapter = GetWorld()->SpawnActor<AShootAdapter>(AShootAdapter::StaticClass());
 	SetSlingShot(ShootAdapter);
 
+	ClockTower = GetWorld()->SpawnActor<AClockTower>(AClockTower::StaticClass());
+	NaveAereaEnemiga01 = GetWorld()->SpawnActor<ANaveAereaEnemiga01>(FVector(0.0f, 580.0f, 80.0f), FRotator::ZeroRotator);
+	NaveAereaEnemiga01->SetClockTower(ClockTower);
+
 }
 
 void ANaveAereaJugador::SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent)
@@ -142,6 +146,16 @@ void ANaveAereaJugador::Tick(float DeltaSeconds)
 		}
 	}
 
+	if (MoveDirection != Movement)
+	{
+		ClockTower->SetTimeOfDay("Enemigo en Movimiento");
+	}
+
+	if (MoveDirection == Movement)
+	{
+		ClockTower->SetTimeOfDay("Enemigo Estatico");
+	}
+
 }
 
 void ANaveAereaJugador::FireBala()
@@ -166,6 +180,7 @@ void ANaveAereaJugador::FireShotBala(FVector FireDirection)
 		{
 			// spawn the projectile
 			World->SpawnActor<AProyectil_Bala>(SpawnLocation, FireRotation);
+			ClockTower->SetTimeOfDay("Enemigo Atacando");
 
 		}
 
@@ -199,6 +214,7 @@ void ANaveAereaJugador::FireShotBomba(FVector FireDirection)
 		{
 			// spawn the projectile
 			World->SpawnActor<AProyectil_Bomba>(SpawnLocation, FireRotation);
+			ClockTower->SetTimeOfDay("Enemigo Atacando");
 
 		}
 
@@ -232,6 +248,7 @@ void ANaveAereaJugador::FireShotMisil(FVector FireDirection)
 		{
 			// spawn the projectile
 			World->SpawnActor<AProyectil_Misil>(SpawnLocation, FireRotation);
+			ClockTower->SetTimeOfDay("Enemigo Atacando");
 
 		}
 
@@ -265,6 +282,7 @@ void ANaveAereaJugador::FireShotRayo(FVector FireDirection)
 		{
 			// spawn the projectile
 			World->SpawnActor<AProyectil_Rayo>(SpawnLocation, FireRotation);
+			ClockTower->SetTimeOfDay("Enemigo Atacando");
 
 		}
 
@@ -379,7 +397,7 @@ void ANaveAereaJugador::ConsumirVida()
 			{
 				pair.Value = pair.Value - 1;
 				Vida = Vida + 1;
-				GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Blue, FString::Printf(TEXT("Vida del jugador aumentada %f"), Vida));
+				GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Blue, FString::Printf(TEXT("Vida del jugador aumentada %i"), Vida));
 
 			}
 			break;
@@ -419,7 +437,7 @@ void ANaveAereaJugador::DisminuirVida()
 			{
 				pair.Value = pair.Value - 1;
 				Vida = Vida - 1;
-				GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Blue, FString::Printf(TEXT("Vida del jugador disminuida %f"), Vida));
+				GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Blue, FString::Printf(TEXT("Vida del jugador disminuida %i"), Vida));
 
 			}
 			break;

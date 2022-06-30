@@ -6,6 +6,8 @@
 #include "Proyectil_Bomba.h"
 #include "Proyectil_Misil.h"
 #include "Proyectil_Rayo.h"
+#include "Publisher.h"
+#include "ClockTower.h"
 
 ANaveAereaEnemiga01::ANaveAereaEnemiga01()
 {
@@ -55,7 +57,7 @@ void ANaveAereaEnemiga01::Tick(float DeltaTime)
 	Current_Location.Y += FMath::Sin(TotalTime + RandomStart);
 	Current_Location.X += FMath::Sin(TotalTime + RandomStart);
 
-	this->SetActorLocation(Current_Location - (Current_Velocity * DeltaTime));
+	this->SetActorLocation(Current_Location + (Current_Velocity * DeltaTime));
 
 	TimeSinceLastShot += DeltaTime;
 
@@ -83,6 +85,7 @@ void ANaveAereaEnemiga01::Tick(float DeltaTime)
 		this->SetActorEnableCollision(false);
 
 	}
+
 	if (bDead)
 	{
 		this->Destroy();
@@ -132,4 +135,50 @@ void ANaveAereaEnemiga01::NotifyHit(UPrimitiveComponent* MyComp, AActor* Other, 
 
 	}
 
+}
+
+void ANaveAereaEnemiga01::Destroyed()
+{
+	Super::Destroyed();
+	//Log Error if its Clock Tower is NULL
+	if (!ClockTower) { UE_LOG(LogTemp, Error, TEXT("Destroyed():ClockTower is NULL, make sure it's initialized.")); return; }
+	//Unsubscribe from the Clock Tower if it's destroyed
+	ClockTower->UnSubscribe(this);
+}
+
+void ANaveAereaEnemiga01::Update(APublisher* Publisher)
+{
+	//Execute the routine
+	Morph();
+}
+
+void ANaveAereaEnemiga01::Morph()
+{
+	//Log Error if its Clock Tower is NULL
+	if (!ClockTower) { UE_LOG(LogTemp, Error, TEXT("Morph():ClockTower is NULL, make sure it's initialized.")); return; }
+
+	//Get the current time of the Clock Tower
+	FString Time = ClockTower->GetTime();
+
+	if (!Time.Compare("Enemigo Estatico"))
+	{
+		GEngine->AddOnScreenDebugMessage(-1, 0.5f, FColor::Yellow, FString::Printf(TEXT("El Enemigo se encuentra Estatico"), *Time));
+	}
+	else if (!Time.Compare("Enemigo en Movimiento"))
+	{
+		GEngine->AddOnScreenDebugMessage(-1, 0.5f, FColor::Yellow, FString::Printf(TEXT("El Enemigo se encuentra en Movimiento"), *Time));
+	}
+	else if (!Time.Compare("Enemigo Atacando"))
+	{
+		GEngine->AddOnScreenDebugMessage(-1, 3.f, FColor::Red, FString::Printf(TEXT("El Enemigo esta Disparando"), *Time));
+	}
+}
+
+void ANaveAereaEnemiga01::SetClockTower(AClockTower* myClockTower)
+{
+	//Log Error if the passed Clock Tower is NULL
+	if (!myClockTower) { UE_LOG(LogTemp, Error, TEXT("SetClockTower(): myClockTower is NULL, make sure it's initialized.")); return; }
+	//Set the Clock Tower and Subscribe to that
+	ClockTower = myClockTower;
+	ClockTower->Subscribe(this);
 }

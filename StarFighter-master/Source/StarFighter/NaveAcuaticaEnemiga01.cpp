@@ -35,6 +35,7 @@ void ANaveAcuaticaEnemiga01::BeginPlay()
 
 	bHit = false;
 	bDead = false;
+	NaveDestruida = false;
 
 	RandomStart = FMath::Rand();
 
@@ -85,6 +86,7 @@ void ANaveAcuaticaEnemiga01::Tick(float DeltaTime)
 	if (bDead)
 	{
 		this->Destroy();
+		SetEstadoNave();
 	}
 
 }
@@ -176,4 +178,9 @@ void ANaveAcuaticaEnemiga01::NotifyHit(UPrimitiveComponent* MyComp, AActor* Othe
 
 	}
 
+}
+
+void ANaveAcuaticaEnemiga01::SetEstadoNave()
+{
+	NaveDestruida = true;
 }

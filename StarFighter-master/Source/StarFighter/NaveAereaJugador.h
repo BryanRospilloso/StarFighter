@@ -6,6 +6,8 @@
 #include "NaveAerea.h"
 #include "InventoryComponent.h"
 #include "SlingShot.h"
+#include "ClockTower.h"
+#include "NaveAereaEnemiga01.h"
 #include "NaveAereaJugador.generated.h"
 
 UCLASS()
@@ -23,7 +25,12 @@ class STARFIGHTER_API ANaveAereaJugador : public ANaveAerea
 
 public:
 	ANaveAereaJugador();
-	
+
+private:
+	AClockTower* ClockTower;
+	ANaveAereaEnemiga01* NaveAereaEnemiga01;
+
+public:
 	// Begin Actor Interface
 	virtual void Tick(float DeltaSeconds) override;
 	virtual void SetupPlayerInputComponent(class UInputComponent* InputComponent) override;

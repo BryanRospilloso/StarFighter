@@ -9,6 +9,10 @@
 #include "ConcreteEnemy.h"
 #include "MeleeEnemy.h"
 #include "ProjectileEnemy.h"
+#include "StarShipFacade_Main.h"
+#include "ClockTower.h"
+#include "FreakyAllen.h"
+#include "NaveAereaEnemiga01.h"
 
 AStarFighterGameModeBase::AStarFighterGameModeBase()
 {
@@ -21,12 +25,13 @@ void AStarFighterGameModeBase::BeginPlay()
 
 	//auto ne = SpawnNave<ANaveTerrestreEnemiga01>();
 	//UE_LOG(LogTemp, Warning, TEXT("Dentro de BeginPlay en GameModeBase"));
-	GetWorld()->SpawnActor<ANaveNodrizaAereaEnemiga>(FVector(-10.0f, -9.0f, 300.0f), FRotator(0.0f, 90.0f, 0.0f));
-	GetWorld()->SpawnActor<ANaveNodrizaAereaEnemiga>(FVector(-20.0f, -9.0f, 200.0f), FRotator(0.0f, 180.0f, 0.0f));
-	GetWorld()->SpawnActor<ABuilder_Main>(FVector(-400.0f, 580.0f, 80.0f), FRotator::ZeroRotator);
+	//GetWorld()->SpawnActor<ANaveNodrizaAereaEnemiga>(FVector(-10.0f, -9.0f, 300.0f), FRotator(0.0f, 90.0f, 0.0f));
+	//GetWorld()->SpawnActor<ANaveNodrizaAereaEnemiga>(FVector(-20.0f, -9.0f, 200.0f), FRotator(0.0f, 180.0f, 0.0f));
+	//GetWorld()->SpawnActor<ABuilder_Main>(FVector(-400.0f, 580.0f, 80.0f), FRotator::ZeroRotator);
+	//GetWorld()->SpawnActor<AStarShipFacade_Main>(FVector::ZeroVector, FRotator::ZeroRotator);
 
 	//Spawn a Concrete Enemy
-	AConcreteEnemy* ConcreteEnemy = GetWorld()->SpawnActor<AConcreteEnemy>(FVector(-400.0f, 580.0f, 100.0f), FRotator(0.0f, 180.0f, 0.0f));
+	/*AConcreteEnemy* ConcreteEnemy = GetWorld()->SpawnActor<AConcreteEnemy>(FVector(-400.0f, 580.0f, 100.0f), FRotator(0.0f, 180.0f, 0.0f));
 
 	//Spawn a Melee Enemy and set its Enemy to the Concrete one 
 	AMeleeEnemy* MeleeEnemy = GetWorld()->SpawnActor<AMeleeEnemy>(AMeleeEnemy::StaticClass());
@@ -45,14 +50,26 @@ void AStarFighterGameModeBase::BeginPlay()
 	Enemy = ProjectileEnemy;
 	Enemy->Fight();
 	GEngine->AddOnScreenDebugMessage(-1, 15.f, FColor::Yellow, FString::Printf(TEXT("Projectile Enemies cause %i damage"), Enemy->GetDamage()));
-	Enemy->Die();
+	Enemy->Die();*/
+
+	//Spawn the Clock Tower
+	//AClockTower* ClockTower = GetWorld()->SpawnActor<AClockTower>(AClockTower::StaticClass());
+	//Spawn the first Subscriber and set its Clock Tower
+	//GetWorld()->SpawnActor<ANaveAereaEnemiga01>(FVector(0.0f, 580.0f, 80.0f), FRotator::ZeroRotator);
+	//Change the time of the Clock Tower, so the Subscribers can execute their own routine
+	//ClockTower->SetTimeOfDay("Enemigo Estatico");
+	//ClockTower->SetTimeOfDay("Enemigo en Movimiento");
+	//ClockTower->SetTimeOfDay("Enemigo Disparando");
+
+	//AFreakyAllen* FreakyAllen1 = GetWorld()->SpawnActor<AFreakyAllen>(AFreakyAllen::StaticClass());
+	//FreakyAllen1->SetEstadoShip();
 
 }
 
 void AStarFighterGameModeBase::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
-	float ProbabilidadAparicionCapsula = FMath::RandRange(1, 80);
+	/*float ProbabilidadAparicionCapsula = FMath::RandRange(1, 80);
 	//GEngine->AddOnScreenDebugMessage(-1, 15.f, FColor::Yellow, FString::Printf(TEXT("Dentro de Tick")));
 	//GEngine->AddOnScreenDebugMessage(-1, 15.f, FColor::Turquoise, FString::Printf(TEXT("Capsula generada %f"), ProbabilidadAparicionCapsula));
 
@@ -91,5 +108,5 @@ void AStarFighterGameModeBase::Tick(float DeltaTime)
 		
 		GEngine->AddOnScreenDebugMessage(-1, 3.f, FColor::Red, FString::Printf(TEXT("Capsula generada %s"), *Capsula->GetNombre()));
 
-	}
+	}*/
 }
