@@ -156,6 +156,14 @@ void ANaveAereaJugador::Tick(float DeltaSeconds)
 		ClockTower->SetTimeOfDay("Enemigo Estatico");
 	}
 
+	float ubicacionNAX = ForwardValue - NaveAereaEnemiga01->Current_Location.X;
+	float ubicacionNAY = RightValue - NaveAereaEnemiga01->Current_Location.Y;
+
+	if ((ubicacionNAX <= 200 || ubicacionNAX <= -200) && (ubicacionNAY <= 200 || ubicacionNAY <= -200))
+	{
+		ClockTower->SetTimeOfDay("Nave Amiga");
+	}
+
 }
 
 void ANaveAereaJugador::FireBala()

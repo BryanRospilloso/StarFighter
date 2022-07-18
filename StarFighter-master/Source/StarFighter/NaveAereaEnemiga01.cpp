@@ -172,6 +172,10 @@ void ANaveAereaEnemiga01::Morph()
 	{
 		GEngine->AddOnScreenDebugMessage(-1, 3.f, FColor::Red, FString::Printf(TEXT("El Enemigo esta Disparando"), *Time));
 	}
+	else if (!Time.Compare("Nave Amiga"))
+	{
+		GEngine->AddOnScreenDebugMessage(-1, 3.f, FColor::Red, FString::Printf(TEXT("La nave es aliada"), *Time));
+	}
 }
 
 void ANaveAereaEnemiga01::SetClockTower(AClockTower* myClockTower)
