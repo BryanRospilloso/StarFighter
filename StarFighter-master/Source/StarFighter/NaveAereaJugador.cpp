@@ -110,6 +110,11 @@ void ANaveAereaJugador::Tick(float DeltaSeconds)
 {
 	Super::Tick(DeltaSeconds);
 
+	CurrentLocation = this->GetActorLocation();
+
+	float jugadorx = CurrentLocation.X;
+	float jugadory = CurrentLocation.Y;
+
 	// Find movement direction
 	const float ForwardValue = GetInputAxisValue(MoveForwardBinding);
 	const float RightValue = GetInputAxisValue(MoveRightBinding);
@@ -156,10 +161,10 @@ void ANaveAereaJugador::Tick(float DeltaSeconds)
 		ClockTower->SetTimeOfDay("Enemigo Estatico");
 	}
 
-	float ubicacionNAX = ForwardValue - NaveAereaEnemiga01->Current_Location.X;
-	float ubicacionNAY = RightValue - NaveAereaEnemiga01->Current_Location.Y;
+	float ubicacionNAX = jugadorx - NaveAereaEnemiga01->Current_Location.X;
+	float ubicacionNAY = jugadory - NaveAereaEnemiga01->Current_Location.Y;
 
-	if ((ubicacionNAX <= 200 || ubicacionNAX <= -200) && (ubicacionNAY <= 200 || ubicacionNAY <= -200))
+	if ((ubicacionNAX <= 10 || ubicacionNAX <= -10) && (ubicacionNAY <= 10 || ubicacionNAY <= -10))
 	{
 		ClockTower->SetTimeOfDay("Nave Amiga");
 	}

@@ -154,4 +154,8 @@ public:
 
 	void CollectableCapsulaVida1();
 
+	FVector CurrentLocation;
+
+	//ANaveAereaJugador* GetPosicion() { return naveposision; }
+
 };
