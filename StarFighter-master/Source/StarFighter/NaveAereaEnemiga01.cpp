@@ -54,8 +54,8 @@ void ANaveAereaEnemiga01::Tick(float DeltaTime)
 	Current_Location = this->GetActorLocation();
 	Current_Rotation = this->GetActorRotation();
 
-	Current_Location.Y += FMath::Sin(TotalTime + RandomStart);
-	Current_Location.X += FMath::Sin(TotalTime + RandomStart);
+	//Current_Location.Y += FMath::Sin(TotalTime + RandomStart);
+	//Current_Location.X += FMath::Sin(TotalTime + RandomStart);
 
 	this->SetActorLocation(Current_Location + (Current_Velocity * DeltaTime));
 

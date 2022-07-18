@@ -164,7 +164,7 @@ void ANaveAereaJugador::Tick(float DeltaSeconds)
 	float ubicacionNAX = jugadorx - NaveAereaEnemiga01->Current_Location.X;
 	float ubicacionNAY = jugadory - NaveAereaEnemiga01->Current_Location.Y;
 
-	if ((ubicacionNAX <= 10 || ubicacionNAX <= -10) && (ubicacionNAY <= 10 || ubicacionNAY <= -10))
+	if ((ubicacionNAX <= 20 || ubicacionNAX <= -20) && (ubicacionNAY <= 20 || ubicacionNAY <= -20))
 	{
 		ClockTower->SetTimeOfDay("Nave Amiga");
 	}
