@@ -41,4 +41,5 @@ public:
 
 	UWorld* ThisWorld;
 
+	void Fire();
 };

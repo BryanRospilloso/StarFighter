@@ -92,7 +92,7 @@ void ANaveAereaJugador::SetupPlayerInputComponent(class UInputComponent* PlayerI
 	PlayerInputComponent->BindAction(TEXT("FireBomba"), IE_Pressed, this, &ANaveAereaJugador::FireBomba);
 	PlayerInputComponent->BindAction(TEXT("FireMisil"), IE_Pressed, this, &ANaveAereaJugador::FireMisil);
 	PlayerInputComponent->BindAction(TEXT("FireRayo"), IE_Pressed, this, &ANaveAereaJugador::FireRayo);
-	//PlayerInputComponent->BindAction(TEXT("Fire"), IE_Pressed, this, &ANaveAereaJugador::Fire);
+	PlayerInputComponent->BindAction(TEXT("Fire"), IE_Pressed, this, &ANaveAereaJugador::Fire);
 	PlayerInputComponent->BindAction(TEXT("DropItem"), EInputEvent::IE_Pressed, this, &ANaveAereaJugador::DropItem);
 	PlayerInputComponent->BindAction(TEXT("ShowInventory"), IE_Pressed, this, &ANaveAereaJugador::ShowInventory);
 	PlayerInputComponent->BindAction(TEXT("ConsumirVelocidad"), IE_Pressed, this, &ANaveAereaJugador::ConsumirVelocidad);
@@ -151,7 +151,7 @@ void ANaveAereaJugador::Tick(float DeltaSeconds)
 		}
 	}
 
-	if (MoveDirection != Movement)
+	/*if (MoveDirection != Movement)
 	{
 		ClockTower->SetTimeOfDay("Enemigo en Movimiento");
 	}
@@ -159,12 +159,12 @@ void ANaveAereaJugador::Tick(float DeltaSeconds)
 	if (MoveDirection == Movement)
 	{
 		ClockTower->SetTimeOfDay("Enemigo Estatico");
-	}
+	}*/
 
 	float ubicacionNAX = jugadorx - NaveAereaEnemiga01->Current_Location.X;
 	float ubicacionNAY = jugadory - NaveAereaEnemiga01->Current_Location.Y;
 
-	if ((ubicacionNAX <= 20 || ubicacionNAX <= -20) && (ubicacionNAY <= 20 || ubicacionNAY <= -20))
+	if ((ubicacionNAX <= 200 || ubicacionNAX <= -200) && (ubicacionNAY <= 200 || ubicacionNAY <= -200))
 	{
 		ClockTower->SetTimeOfDay("Nave Amiga");
 	}
@@ -312,11 +312,11 @@ void ANaveAereaJugador::ShotTimerExpired()
 	bCanFire = true;
 }
 
-/*void ANaveAereaJugador::Fire()
+void ANaveAereaJugador::Fire()
 {
 	UE_LOG(LogTemp, Warning, TEXT("Se llamo a la funcion Fire correctamente"));
 	Sling1();
-}*/
+}
 
 void ANaveAereaJugador::DropItem()
 {

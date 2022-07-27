@@ -19,6 +19,8 @@
 #include "DivideConquerStrategy.h"
 #include "RetreatStrategy.h"
 
+#include "OldSchoolSlotMachine.h"
+
 AStarFighterGameModeBase::AStarFighterGameModeBase()
 {
 	PrimaryActorTick.bCanEverTick = true;
@@ -95,6 +97,32 @@ void AStarFighterGameModeBase::BeginPlay()
 	BattleShip->AlterManeuvers(RetreatStrategy);
 	//Engage with the current Strategy
 	BattleShip->Engage();
+
+	//Create the Slot Machine and set its Dollars Amount to 100
+	AOldSchoolSlotMachine* OldSchoolSlotMachine = GetWorld()->SpawnActor<AOldSchoolSlotMachine>(AOldSchoolSlotMachine::StaticClass());
+	OldSchoolSlotMachine->Initialize(100);
+	//Log the current Slot Machine state
+	GEngine->AddOnScreenDebugMessage(-1, 15.f, FColor::Yellow, FString::Printf(TEXT("%s"), *OldSchoolSlotMachine->GetState()->ToString()));
+	//Insert coin and Pull the lever
+	OldSchoolSlotMachine->InsertCoin();
+	OldSchoolSlotMachine->PullLever();
+	//Log the current Slot Machine state
+	GEngine->AddOnScreenDebugMessage(-1, 15.f, FColor::Yellow, FString::Printf(TEXT("%s"), *OldSchoolSlotMachine->GetState()->ToString()));
+	//Insert coin, Pull the lever, then insert coin again
+	OldSchoolSlotMachine->InsertCoin();
+	OldSchoolSlotMachine->PullLever();
+	OldSchoolSlotMachine->InsertCoin();
+	//Log the current Slot Machine state
+	GEngine->AddOnScreenDebugMessage(-1, 15.f, FColor::Yellow, FString::Printf(TEXT("%s"), *OldSchoolSlotMachine->GetState()->ToString()));
+	//Pull the lever
+	OldSchoolSlotMachine->PullLever();
+	//Add 100 Dollars
+	OldSchoolSlotMachine->RestockDollars(100);
+	//Insert coin and Pull the lever
+	OldSchoolSlotMachine->InsertCoin();
+	OldSchoolSlotMachine->PullLever();
+	//Log the current Slot Machine state
+	GEngine->AddOnScreenDebugMessage(-1, 15.f, FColor::Yellow, FString::Printf(TEXT("%s"), *OldSchoolSlotMachine->GetState()->ToString()));
 
 }
 

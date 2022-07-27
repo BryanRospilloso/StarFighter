@@ -90,3 +90,7 @@ void ASpaceShipShot::FireWeaponBala()
 
 }
 
+void ASpaceShipShot::Fire()
+{
+	GEngine->AddOnScreenDebugMessage(-1, 15.f, FColor::Cyan, TEXT("El arma esta disparando"));
+}

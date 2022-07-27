@@ -58,7 +58,7 @@ public:
 	/* Handler for the fire timer expiry */
 	void ShotTimerExpired();
 
-	//void Fire();
+	void Fire();
 
 	/** Offset from the ships location to spawn projectiles */
 	UPROPERTY(Category = Gameplay, EditAnywhere, BlueprintReadWrite)
@@ -155,7 +155,5 @@ public:
 	void CollectableCapsulaVida1();
 
 	FVector CurrentLocation;
-
-	//ANaveAereaJugador* GetPosicion() { return naveposision; }
 
 };

@@ -28,6 +28,7 @@ void AShootAdapter::Tick(float DeltaTime)
 
 void AShootAdapter::Sling()
 {
-	Disparar->StartFiringBala();
+	//Disparar->StartFiringBala();
+	Disparar->Fire();
 }
 
