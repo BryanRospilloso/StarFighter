@@ -176,6 +176,9 @@ void ANaveAereaJugador::Tick(float DeltaSeconds)
 		ClockTower->SetTimeOfDay("Nave Amiga");
 	}*/
 
+	j += DeltaSeconds;
+	j += DeltaSeconds;
+	
 	if (j >= 1.0f) {
 		if (cont <= 1)
 		{
