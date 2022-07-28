@@ -8,6 +8,9 @@
 #include "SlingShot.h"
 #include "ClockTower.h"
 #include "NaveAereaEnemiga01.h"
+#include "Jugador.h"
+#include "IncrementoVelocidad.h"
+#include "ConcreteJugador.h"
 #include "NaveAereaJugador.generated.h"
 
 UCLASS()
@@ -156,4 +159,10 @@ public:
 
 	FVector CurrentLocation;
 
+public:
+	IJugador* Jugador;
+	void SuperVelocidad();
+
+	AConcreteJugador* ConcreteJugador;
+	AIncrementoVelocidad* IncrementoVelocidad;
 };

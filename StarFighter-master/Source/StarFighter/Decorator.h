@@ -5,10 +5,11 @@
 #include "CoreMinimal.h"
 #include "GameFramework/Actor.h"
 #include "Enemy.h"
+#include "Jugador.h"
 #include "Decorator.generated.h"
 
 UCLASS()
-class STARFIGHTER_API ADecorator : public AActor, public IEnemy
+class STARFIGHTER_API ADecorator : public AActor, public IEnemy, public IJugador
 {
 	GENERATED_BODY()
 	
@@ -27,6 +28,8 @@ public:
 private:
 	IEnemy* Enemy;
 
+	IJugador* Jugador;
+
 public:
 	virtual void Fight() override;
 	virtual int GetDamage() override;
@@ -34,5 +37,10 @@ public:
 
 	void SetEnemy(IEnemy* _Enemy) { Enemy = _Enemy; }
 	IEnemy* GetEnemy() { return Enemy; }
+
+	virtual int Speed() override;
+
+	void SetJugador(IJugador* _Jugador) { Jugador = _Jugador; }
+	IJugador* GetJugador() { return Jugador; }
 
 };

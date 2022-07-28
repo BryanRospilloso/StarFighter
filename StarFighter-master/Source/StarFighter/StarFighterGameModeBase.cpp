@@ -36,9 +36,9 @@ void AStarFighterGameModeBase::BeginPlay()
 	//GetWorld()->SpawnActor<ANaveNodrizaAereaEnemiga>(FVector(-20.0f, -9.0f, 200.0f), FRotator(0.0f, 180.0f, 0.0f));
 	//GetWorld()->SpawnActor<ABuilder_Main>(FVector(-400.0f, 580.0f, 80.0f), FRotator::ZeroRotator);
 	//GetWorld()->SpawnActor<AStarShipFacade_Main>(FVector::ZeroVector, FRotator::ZeroRotator);
-
+	/*
 	//Spawn a Concrete Enemy
-	/*AConcreteEnemy* ConcreteEnemy = GetWorld()->SpawnActor<AConcreteEnemy>(FVector(-400.0f, 580.0f, 100.0f), FRotator(0.0f, 180.0f, 0.0f));
+	AConcreteEnemy* ConcreteEnemy = GetWorld()->SpawnActor<AConcreteEnemy>(FVector(-400.0f, 580.0f, 100.0f), FRotator(0.0f, 180.0f, 0.0f));
 
 	//Spawn a Melee Enemy and set its Enemy to the Concrete one 
 	AMeleeEnemy* MeleeEnemy = GetWorld()->SpawnActor<AMeleeEnemy>(AMeleeEnemy::StaticClass());
@@ -70,10 +70,9 @@ void AStarFighterGameModeBase::BeginPlay()
 
 	//AFreakyAllen* FreakyAllen1 = GetWorld()->SpawnActor<AFreakyAllen>(AFreakyAllen::StaticClass());
 	//FreakyAllen1->SetEstadoShip();
-
+	/*
 	//Enemies alert log
-	GEngine->AddOnScreenDebugMessage(-1, 15.f, FColor::Yellow,
-		TEXT("A tiny frigate wants some trouble"));
+	GEngine->AddOnScreenDebugMessage(-1, 15.f, FColor::Yellow, TEXT("A tiny frigate wants some trouble"));
 	//Spawn the Battle Ship
 	ABattleShip* BattleShip = GetWorld()->SpawnActor<ABattleShip>(ABattleShip::StaticClass());
 	//Create the Brute Force Strategy and set it to the Battle Ship
@@ -82,16 +81,14 @@ void AStarFighterGameModeBase::BeginPlay()
 	//Engage with the current Strategy
 	BattleShip->Engage();
 	//Enemies alert log
-	GEngine->AddOnScreenDebugMessage(-1, 15.f, FColor::Yellow,
-		TEXT("Four tiny frigates want some trouble"));
+	GEngine->AddOnScreenDebugMessage(-1, 15.f, FColor::Yellow, TEXT("Four tiny frigates want some trouble"));
 	//Create the Divide Conquer Strategy and set it to the Battle Ship
 	ADivideConquerStrategy* DivideConquerStrategy = GetWorld()->SpawnActor<ADivideConquerStrategy>(ADivideConquerStrategy::StaticClass());
 	BattleShip->AlterManeuvers(DivideConquerStrategy);
 	//Engage with the current Strategy
 	BattleShip->Engage();
 	//Enemies alert log
-	GEngine->AddOnScreenDebugMessage(-1, 15.f, FColor::Yellow,
-		TEXT("An aircraft carrier group wants some trouble"));
+	GEngine->AddOnScreenDebugMessage(-1, 15.f, FColor::Yellow, TEXT("An aircraft carrier group wants some trouble"));
 	//Create the Retreat Strategy and set it to the Battle Ship
 	ARetreatStrategy* RetreatStrategy = GetWorld()->SpawnActor<ARetreatStrategy>(ARetreatStrategy::StaticClass());
 	BattleShip->AlterManeuvers(RetreatStrategy);
@@ -123,7 +120,7 @@ void AStarFighterGameModeBase::BeginPlay()
 	OldSchoolSlotMachine->PullLever();
 	//Log the current Slot Machine state
 	GEngine->AddOnScreenDebugMessage(-1, 15.f, FColor::Yellow, FString::Printf(TEXT("%s"), *OldSchoolSlotMachine->GetState()->ToString()));
-
+	*/
 }
 
 void AStarFighterGameModeBase::Tick(float DeltaTime)

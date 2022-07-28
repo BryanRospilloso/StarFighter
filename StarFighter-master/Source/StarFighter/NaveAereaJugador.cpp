@@ -78,6 +78,10 @@ void ANaveAereaJugador::BeginPlay()
 	NaveAereaEnemiga01 = GetWorld()->SpawnActor<ANaveAereaEnemiga01>(FVector(0.0f, 580.0f, 80.0f), FRotator::ZeroRotator);
 	NaveAereaEnemiga01->SetClockTower(ClockTower);
 
+	ConcreteJugador = GetWorld()->SpawnActor<AConcreteJugador>(AConcreteJugador::StaticClass());
+	IncrementoVelocidad = GetWorld()->SpawnActor<AIncrementoVelocidad>(AIncrementoVelocidad::StaticClass());
+	IncrementoVelocidad->SetJugador(ConcreteJugador);
+
 }
 
 void ANaveAereaJugador::SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent)
@@ -101,6 +105,7 @@ void ANaveAereaJugador::SetupPlayerInputComponent(class UInputComponent* PlayerI
 	PlayerInputComponent->BindAction(TEXT("DisminuirVida"), IE_Pressed, this, &ANaveAereaJugador::DisminuirVida);
 	PlayerInputComponent->BindAction(TEXT("VisibilityOff"), IE_Pressed, this, &ANaveAereaJugador::VisibilityOff);
 	PlayerInputComponent->BindAction(TEXT("VisibilityOn"), IE_Pressed, this, &ANaveAereaJugador::VisibilityOn);
+	PlayerInputComponent->BindAction(TEXT("SuperVelocidad"), IE_Pressed, this, &ANaveAereaJugador::SuperVelocidad);
 
 }
 
@@ -164,10 +169,10 @@ void ANaveAereaJugador::Tick(float DeltaSeconds)
 	float ubicacionNAX = jugadorx - NaveAereaEnemiga01->Current_Location.X;
 	float ubicacionNAY = jugadory - NaveAereaEnemiga01->Current_Location.Y;
 
-	if ((ubicacionNAX <= 200 || ubicacionNAX <= -200) && (ubicacionNAY <= 200 || ubicacionNAY <= -200))
+	/*if ((ubicacionNAX <= 200 || ubicacionNAX <= -200) && (ubicacionNAY <= 200 || ubicacionNAY <= -200))
 	{
 		ClockTower->SetTimeOfDay("Nave Amiga");
-	}
+	}*/
 
 }
 
@@ -556,4 +561,14 @@ void ANaveAereaJugador::Sling1()
 
 	//Fire
 	SlingShot->Sling();
+}
+
+void ANaveAereaJugador::SuperVelocidad()
+{
+	Jugador = IncrementoVelocidad;
+
+	MoveSpeed = Jugador->Speed() + MoveSpeed;
+
+	GEngine->AddOnScreenDebugMessage(-1, 15.f, FColor::Yellow, FString::Printf(TEXT("Melee Enemies cause %i damage."), Jugador->Speed()));
+	UE_LOG(LogTemp, Warning, TEXT("Se llamo a la funcion Fire correctamente"));
 }
