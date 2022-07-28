@@ -82,7 +82,7 @@ void ANaveAereaJugador::BeginPlay()
 	IncrementoVelocidad = GetWorld()->SpawnActor<AIncrementoVelocidad>(AIncrementoVelocidad::StaticClass());
 	IncrementoVelocidad->SetJugador(ConcreteJugador);
 
-	Energy = 0;
+	//Energy = 0;
 
 }
 
@@ -176,7 +176,7 @@ void ANaveAereaJugador::Tick(float DeltaSeconds)
 		ClockTower->SetTimeOfDay("Nave Amiga");
 	}*/
 
-	j += DeltaSeconds;
+	/*j += DeltaSeconds;
 	j += DeltaSeconds;
 	
 	if (j >= 1.0f) {
@@ -192,7 +192,7 @@ void ANaveAereaJugador::Tick(float DeltaSeconds)
 			}
 		}
 		j = 0.0f;
-	}
+	}*/
 }
 
 void ANaveAereaJugador::FireBala()
@@ -584,7 +584,7 @@ void ANaveAereaJugador::Sling1()
 
 void ANaveAereaJugador::SuperVelocidad()
 {
-	if (Energia < 5) {
+	/*if (Energia < 5) {
 		GEngine->AddOnScreenDebugMessage(-1, 15.f, FColor::Yellow, TEXT("No hay energia suficiente"));
 	}
 	else {
@@ -594,5 +594,10 @@ void ANaveAereaJugador::SuperVelocidad()
 
 		GEngine->AddOnScreenDebugMessage(-1, 15.f, FColor::Yellow, FString::Printf(TEXT("La nave aumento en %i su velocidad."), Jugador->Speed()));
 		Energia = -5;
-	}
+	}*/
+	Jugador = IncrementoVelocidad;
+
+	MoveSpeed = Jugador->Speed() + MoveSpeed;
+
+	GEngine->AddOnScreenDebugMessage(-1, 15.f, FColor::Yellow, FString::Printf(TEXT("La nave aumento en %i su velocidad."), Jugador->Speed()));
 }
