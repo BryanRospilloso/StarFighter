@@ -82,6 +82,8 @@ void ANaveAereaJugador::BeginPlay()
 	IncrementoVelocidad = GetWorld()->SpawnActor<AIncrementoVelocidad>(AIncrementoVelocidad::StaticClass());
 	IncrementoVelocidad->SetJugador(ConcreteJugador);
 
+	Energy = 0;
+
 }
 
 void ANaveAereaJugador::SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent)
@@ -174,6 +176,20 @@ void ANaveAereaJugador::Tick(float DeltaSeconds)
 		ClockTower->SetTimeOfDay("Nave Amiga");
 	}*/
 
+	if (j >= 1.0f) {
+		if (cont <= 1)
+		{
+			if (Energy != 10) {
+				Energy++;
+			}
+			cont += 1;
+			if (cont = 1)
+			{
+				cont = 0;
+			}
+		}
+		j = 0.0f;
+	}
 }
 
 void ANaveAereaJugador::FireBala()
@@ -565,10 +581,15 @@ void ANaveAereaJugador::Sling1()
 
 void ANaveAereaJugador::SuperVelocidad()
 {
-	Jugador = IncrementoVelocidad;
+	if (Energia < 5) {
+		GEngine->AddOnScreenDebugMessage(-1, 15.f, FColor::Yellow, TEXT("No hay energia suficiente"));
+	}
+	else {
+		Jugador = IncrementoVelocidad;
 
-	MoveSpeed = Jugador->Speed() + MoveSpeed;
+		MoveSpeed = Jugador->Speed() + MoveSpeed;
 
-	GEngine->AddOnScreenDebugMessage(-1, 15.f, FColor::Yellow, FString::Printf(TEXT("Melee Enemies cause %i damage."), Jugador->Speed()));
-	UE_LOG(LogTemp, Warning, TEXT("Se llamo a la funcion Fire correctamente"));
+		GEngine->AddOnScreenDebugMessage(-1, 15.f, FColor::Yellow, FString::Printf(TEXT("La nave aumento en %i su velocidad."), Jugador->Speed()));
+		Energia = -5;
+	}
 }

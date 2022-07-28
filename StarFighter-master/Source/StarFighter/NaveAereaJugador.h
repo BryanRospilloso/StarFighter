@@ -165,4 +165,8 @@ public:
 
 	AConcreteJugador* ConcreteJugador;
 	AIncrementoVelocidad* IncrementoVelocidad;
+
+	float j;
+	int cont;
+	int Energy;
 };
